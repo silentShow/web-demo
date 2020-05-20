@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>select动态赋值、默认选中、删除</title>
+		<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+	</head>
+	<body>
+		<h3>单选框</h3>
+		<select id="select_one">
+			<option></option>
+		</select>
+		<select id="select_two">
+			<option></option>
+		</select>
+		<select id="select_three">
+			<option></option>
+		</select>
+		<br>
+		<h3>多选框</h3>
+		<select id="select_four" multiple="multiple" size=3  style="height: 200px;width:100px"></select>
+		<select id="select_five" multiple="multiple"   style="height: 200px;width: 100px;">
+			<option value="0" selected="selected">百度</option>
+			<option value="1" selected="selected">腾讯</option>
+			<option value="2" selected="selected">阿里巴巴</option>
+			<option value="3" >字节跳动</option>
+			<option value="4" >京东</option>
+			<option value="5" selected="selected">拼多多</option>
+		</select>
+	</body>
+	<script type="application/javascript">
+		//全局变量 arr
+		let arr = ['百度','腾讯','阿里巴巴','字节跳动','京东','拼多多']
+		
+		/** js实现*/
+		//js 动态赋值
+		let com = document.getElementById("select_one");
+		for( let i = 0;i<arr.length;i++){
+			com.options.add(new Option(arr[i],i));
+		}
+		//js 默认选中
+		let options = document.getElementById("select_one").options;
+		for(let i = 0;i<options.length;i++){
+			if(options[i].value==2){//根据id选中阿里
+				options[i].selected = true;
+			}
+		}
+		//js 删除option（删除第1个options）
+		com.options.remove(1);
+		
+		/**jq实现**/
+		//jq 通过拼接html实现 动态赋值
+		let oHtml = '';
+		for(let i=0;i<arr.length;i++){
+			oHtml+='<option value="'+i+'">'+arr[i]+'</option>';
+		}
+		$("#select_two").html(oHtml);
+		
+		for(let i=0;i<arr.length;i++){
+			if(arr[i]=="腾讯"){
+				$("#select_three").append("<option value='"+i+"' selected=true >"+arr[i]+"</option>");
+			}else{
+				$("#select_three").append("<option value='"+i+"'>"+arr[i]+"</option>");
+			}
+		}
+		//jq实现动态选中 、移除选中
+		setTimeout(function(){//为了看清楚效果，两秒后执行
+			$("#select_two").find("option[value='5']").attr("selected",true);//选中拼多多
+			$("#select_three").find("option[value='1']").attr("selected",false);//移除选中腾讯
+			},2000);
+		
+		
+		//多选下拉框赋值  并且选中id为基数的
+		for(let i=0;i<arr.length;i++){
+			if(i%2==0){
+				$("#select_four").append("<option value='"+i+"' selected=true >"+arr[i]+"</option>");
+			}else{
+				$("#select_four").append("<option value='"+i+"'>"+arr[i]+"</option>");
+			}
+		}
+		
+		//批量选中 、批量移除选中
+		setTimeout(function(){
+			//移除选中所有id为基数的
+			$("#select_four option").each(function(){
+				if($(this).val()%2==0){
+					$("#select_four").find("option[value='"+$(this).val()+"']").attr("selected",false);
+				}
+			});
+			//选中所有id为偶数的
+			$("#select_four option").each(function(){
+				if($(this).val()%2!=0){
+					$("#select_four").find("option[value='"+$(this).val()+"']").attr("selected",true);
+				}
+			});
+		},2000);
+		
+		//删除指定的option
+		setTimeout(function(){
+			$("#select_five").find("option[value='5']").remove();
+			$("#select_five option[value='0']").remove();
+		},2000);
+		
+	</script>
+</html>
